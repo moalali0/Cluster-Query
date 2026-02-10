@@ -1,0 +1,56 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: contract-ai-db
+    environment:
+      POSTGRES_DB: contract_ai
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d contract_ai"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+    container_name: contract-ai-backend
+    environment:
+      APP_DATABASE_URL: postgresql://contract_ai_app:contract_ai_app@db:5432/contract_ai
+      INGEST_DATABASE_URL: postgresql://contract_ai_ingest:contract_ai_ingest@db:5432/contract_ai
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      SIMILARITY_THRESHOLD: 0.62
+      DEFAULT_TOP_K: 5
+      ALLOWED_CLIENTS: Bank_A,Bank_B
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./data:/data
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: contract-ai-frontend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
