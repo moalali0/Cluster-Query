@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     api_port: int = 8000
     similarity_threshold: float = 0.62
     default_top_k: int = 5
-    allowed_clients: str = "Bank_A,Bank_B"
+    allowed_clients: str = "Bank_A,Bank_B,Bank_C"
 
     # Ollama / LLM settings
     ollama_host: str = "http://host.docker.internal:11434"

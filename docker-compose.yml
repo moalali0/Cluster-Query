@@ -28,7 +28,7 @@ services:
       API_PORT: 8000
       SIMILARITY_THRESHOLD: 0.25
       DEFAULT_TOP_K: 5
-      ALLOWED_CLIENTS: Bank_A,Bank_B
+      ALLOWED_CLIENTS: Bank_A,Bank_B,Bank_C
       OLLAMA_HOST: http://host.docker.internal:11434
       OLLAMA_MODEL: llama3.2:latest
       LLM_ENABLED: "true"
