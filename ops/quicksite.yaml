@@ -1,0 +1,37 @@
+# Quicksite deployment configuration placeholder.
+# TODO: Fill with Quicksite-specific config once platform access is available.
+
+app:
+  name: contract-ai
+  team: # TODO: your team name
+  environment: # staging | production
+  replicas: 2
+
+  resources:
+    cpu: "1"
+    memory: "2Gi"
+
+  health_check:
+    path: /health
+    interval: 30s
+    timeout: 10s
+    healthy_threshold: 2
+    unhealthy_threshold: 3
+
+  secrets:
+    - DATABASE_URL
+    - JUMPCLOUD_CLIENT_ID
+    - JUMPCLOUD_AUDIENCE
+    - JUMPCLOUD_JWKS_URL
+    - API_KEY
+
+  env:
+    AUTH_ENABLED: "true"
+    LLM_ENABLED: "true"
+    CORS_ORIGINS: "https://contract-ai.internal.company.com"
+    ALLOWED_CLIENTS: # TODO: real client IDs
+    OLLAMA_HOST: # TODO: internal Ollama endpoint
+    OLLAMA_MODEL: "llama3:8b-instruct"
+    PROMPT_VERSION: "v1"
+    RATE_LIMIT_PER_MINUTE: "60"
+    API_KEY_REQUIRED: "true"

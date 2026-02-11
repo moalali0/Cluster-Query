@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, Header
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 logger = logging.getLogger(__name__)
 
 from .audit import log_api_event
+from .auth import CurrentUser, get_current_user
 from .config import settings
 from .db import get_app_conn
 from .embeddings import embed_text
@@ -26,17 +27,12 @@ from .schemas import (
     StructuredChatRequest,
     StructuredSearchRequest,
 )
+from .security import get_cors_config
 
 app = FastAPI(title="Secure Internal Contract AI - Phase 0")
 GLOBAL_SCOPE = "ALL_BANKS"
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.add_middleware(CORSMiddleware, **get_cors_config())
 
 
 @app.get("/health")
@@ -88,11 +84,11 @@ def _sse(event: str, payload: dict[str, Any]) -> str:
 @app.post("/api/search", response_model=SearchResponse)
 def api_search(
     payload: SearchRequest,
-    x_user_id: str = Header(default="demo-analyst", alias="x-user-id"),
+    user: CurrentUser = Depends(get_current_user),
 ) -> SearchResponse:
     started = time.perf_counter()
     query_embedding = embed_text(payload.query)
-    target_clients = settings.allowed_client_list
+    target_clients = user.allowed_clients or settings.allowed_client_list
 
     with get_app_conn() as conn:
         raw_results = search_clusters_across_clients(conn, target_clients, query_embedding, payload.top_k)
@@ -102,7 +98,7 @@ def api_search(
         _safe_log_event(
             conn=conn,
             client_id=GLOBAL_SCOPE,
-            user_id=x_user_id,
+            user_id=user.id,
             endpoint="/api/search",
             query_text=payload.query,
             result_count=len(filtered),
@@ -140,11 +136,11 @@ def api_search(
 @app.post("/api/chat", response_model=ChatResponse)
 def api_chat(
     payload: ChatRequest,
-    x_user_id: str = Header(default="demo-analyst", alias="x-user-id"),
+    user: CurrentUser = Depends(get_current_user),
 ) -> ChatResponse:
     started = time.perf_counter()
     query_embedding = embed_text(payload.query)
-    target_clients = settings.allowed_client_list
+    target_clients = user.allowed_clients or settings.allowed_client_list
 
     with get_app_conn() as conn:
         raw_results = search_clusters_across_clients(conn, target_clients, query_embedding, settings.default_top_k)
@@ -155,7 +151,7 @@ def api_chat(
             _safe_log_event(
                 conn=conn,
                 client_id=GLOBAL_SCOPE,
-                user_id=x_user_id,
+                user_id=user.id,
                 endpoint="/api/chat",
                 query_text=payload.query,
                 result_count=0,
@@ -176,7 +172,7 @@ def api_chat(
         _safe_log_event(
             conn=conn,
             client_id=GLOBAL_SCOPE,
-            user_id=x_user_id,
+            user_id=user.id,
             endpoint="/api/chat",
             query_text=payload.query,
             result_count=len(filtered),
@@ -194,11 +190,11 @@ def api_chat(
 @app.post("/api/chat/stream")
 async def api_chat_stream(
     payload: ChatRequest,
-    x_user_id: str = Header(default="demo-analyst", alias="x-user-id"),
+    user: CurrentUser = Depends(get_current_user),
 ) -> StreamingResponse:
     started = time.perf_counter()
     query_embedding = embed_text(payload.query)
-    target_clients = settings.allowed_client_list
+    target_clients = user.allowed_clients or settings.allowed_client_list
 
     with get_app_conn() as conn:
         raw_results = search_clusters_across_clients(conn, target_clients, query_embedding, settings.default_top_k)
@@ -218,7 +214,7 @@ async def api_chat_stream(
         _safe_log_event(
             conn=conn,
             client_id=GLOBAL_SCOPE,
-            user_id=x_user_id,
+            user_id=user.id,
             endpoint="/api/chat/stream",
             query_text=payload.query,
             result_count=len(filtered),
@@ -281,10 +277,10 @@ def _do_structured_search(
 @app.post("/api/search/structured", response_model=SearchResponse)
 def api_search_structured(
     payload: StructuredSearchRequest,
-    x_user_id: str = Header(default="demo-analyst", alias="x-user-id"),
+    user: CurrentUser = Depends(get_current_user),
 ) -> SearchResponse:
     started = time.perf_counter()
-    target_clients = settings.allowed_client_list
+    target_clients = user.allowed_clients or settings.allowed_client_list
     raw_results = _do_structured_search(payload, payload.top_k)
     filtered = _filter_results(raw_results) if payload.language else raw_results
     elapsed_ms = int((time.perf_counter() - started) * 1000)
@@ -297,7 +293,7 @@ def api_search_structured(
         _safe_log_event(
             conn=conn,
             client_id=GLOBAL_SCOPE,
-            user_id=x_user_id,
+            user_id=user.id,
             endpoint="/api/search/structured",
             query_text=query_text,
             result_count=len(filtered),
@@ -334,10 +330,10 @@ def api_search_structured(
 @app.post("/api/chat/structured/stream")
 async def api_chat_structured_stream(
     payload: StructuredChatRequest,
-    x_user_id: str = Header(default="demo-analyst", alias="x-user-id"),
+    user: CurrentUser = Depends(get_current_user),
 ) -> StreamingResponse:
     started = time.perf_counter()
-    target_clients = settings.allowed_client_list
+    target_clients = user.allowed_clients or settings.allowed_client_list
     raw_results = _do_structured_search(payload, settings.default_top_k)
     filtered = _filter_results(raw_results) if payload.language else raw_results
     elapsed_ms = int((time.perf_counter() - started) * 1000)
@@ -352,7 +348,7 @@ async def api_chat_structured_stream(
         _safe_log_event(
             conn=conn,
             client_id=GLOBAL_SCOPE,
-            user_id=x_user_id,
+            user_id=user.id,
             endpoint="/api/chat/structured/stream",
             query_text=query_text,
             result_count=len(filtered),

@@ -1,0 +1,94 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+
+# Only one deploy at a time
+concurrency:
+  group: deploy-${{ github.event.inputs.environment || 'staging' }}
+  cancel-in-progress: false
+
+jobs:
+  deploy-staging:
+    if: github.event.inputs.environment != 'production'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # TODO: Push to container registry
+      # - name: Login to registry
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ${{ secrets.REGISTRY_URL }}
+      #     username: ${{ secrets.REGISTRY_USER }}
+      #     password: ${{ secrets.REGISTRY_PASSWORD }}
+      #
+      # - name: Build and push
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: ${{ secrets.REGISTRY_URL }}/contract-ai:${{ github.sha }}
+
+      - name: Build image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: contract-ai:${{ github.sha }}
+
+      # TODO: Trigger Quicksite deployment
+      # - name: Deploy to Quicksite (staging)
+      #   run: |
+      #     curl -X POST "${{ secrets.QUICKSITE_WEBHOOK_URL }}" \
+      #       -H "Authorization: Bearer ${{ secrets.QUICKSITE_TOKEN }}" \
+      #       -H "Content-Type: application/json" \
+      #       -d '{"image": "contract-ai:${{ github.sha }}", "environment": "staging"}'
+
+      - name: Health check (staging)
+        run: |
+          echo "TODO: curl https://staging.contract-ai.internal.company.com/health"
+
+  deploy-production:
+    if: github.event.inputs.environment == 'production'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: contract-ai:${{ github.sha }}
+
+      # TODO: Push to registry + trigger Quicksite production deploy
+      # - name: Deploy to Quicksite (production)
+      #   run: |
+      #     curl -X POST "${{ secrets.QUICKSITE_WEBHOOK_URL }}" \
+      #       -H "Authorization: Bearer ${{ secrets.QUICKSITE_TOKEN }}" \
+      #       -H "Content-Type: application/json" \
+      #       -d '{"image": "contract-ai:${{ github.sha }}", "environment": "production"}'
+
+      - name: Health check (production)
+        run: |
+          echo "TODO: curl https://contract-ai.internal.company.com/health"

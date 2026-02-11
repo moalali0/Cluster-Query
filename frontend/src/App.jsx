@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { AUTH_ENABLED, isAuthenticated, getAuthHeaders, logout } from "./auth";
+import LoginPage from "./components/LoginPage";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
-const USER_ID = "demo-analyst";
 
 function formatJson(value) {
   if (!value) return "-";
@@ -178,6 +179,8 @@ function ChatPanel({ answer, citations, evidenceFound, streaming }) {
 /* ── Main App ── */
 
 export default function App() {
+  if (AUTH_ENABLED && !isAuthenticated()) return <LoginPage />;
+
   const [term, setTerm] = useState("");
   const [attribute, setAttribute] = useState("");
   const [language, setLanguage] = useState("");
@@ -203,7 +206,7 @@ export default function App() {
   async function performSearch() {
     const response = await fetch(`${API_BASE}/api/search/structured`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-user-id": USER_ID },
+      headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
       body: JSON.stringify(buildBody({ top_k: 5 })),
     });
     if (!response.ok) {
@@ -224,7 +227,7 @@ export default function App() {
 
     const response = await fetch(`${API_BASE}/api/chat/structured/stream`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-user-id": USER_ID },
+      headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
       body: JSON.stringify(buildBody()),
     });
 
@@ -315,9 +318,19 @@ export default function App() {
               <div className="h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse-slow" />
               <span className="text-[10px] font-medium text-surface-900">All Bank Streams</span>
             </div>
-            <div className="rounded-full border border-surface-500 bg-surface-300 px-3 py-1">
-              <span className="text-[10px] font-medium text-surface-800">{USER_ID}</span>
-            </div>
+            {AUTH_ENABLED ? (
+              <button
+                type="button"
+                onClick={logout}
+                className="rounded-full border border-surface-500 bg-surface-300 px-3 py-1 text-[10px] font-medium text-surface-800 transition-colors hover:border-brand-600/40 hover:text-brand-400"
+              >
+                Sign out
+              </button>
+            ) : (
+              <div className="rounded-full border border-surface-500 bg-surface-300 px-3 py-1">
+                <span className="text-[10px] font-medium text-surface-800">demo-analyst</span>
+              </div>
+            )}
           </div>
         </div>
       </header>

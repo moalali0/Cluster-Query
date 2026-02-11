@@ -7,27 +7,10 @@ from typing import Any, AsyncIterator
 import httpx
 
 from .config import settings
+from .language import get_language_instruction
+from .prompts import get_prompt_for_term
 
 logger = logging.getLogger(__name__)
-
-SYSTEM_PROMPT = (
-    "You are a helpful contract precedent assistant. "
-    "You explain what was found in a simple, conversational way — like a senior colleague briefing an analyst.\n\n"
-    "Rules:\n"
-    "1. ONLY use information from the provided clusters. Never make things up.\n"
-    "2. Refer to clusters by their short ID in square brackets, e.g. [7a4638ab].\n"
-    "3. Do NOT give legal advice. Just describe what the data shows.\n"
-    "4. Use plain English. Avoid jargon unless it comes directly from the data.\n"
-    "5. For each cluster, explain:\n"
-    "   - What the clause language says (quote it briefly)\n"
-    "   - What was codified (the structured fields and values)\n"
-    "   - If there is a query history, mention what was discussed between analyst and client\n"
-    "   - Which client environment (bank) it belongs to\n"
-    "6. After covering individual clusters, briefly note any patterns — e.g. if multiple banks "
-    "use similar language, or if there are notable differences.\n"
-    "7. Keep it concise. A few sentences per cluster is enough.\n"
-    "8. If no relevant evidence is provided, say so clearly."
-)
 
 _TIMEOUT = httpx.Timeout(connect=60.0, read=300.0, write=10.0, pool=10.0)
 
@@ -89,7 +72,12 @@ def build_chat_messages(
     attribute: str | None = None,
     language: str | None = None,
 ) -> list[dict[str, str]]:
-    """Assemble system + user messages for the LLM."""
+    """Assemble system + user messages for the LLM.
+
+    Uses the prompt registry for term-specific prompts and appends
+    language instructions when non-English clauses are detected.
+    """
+    template = get_prompt_for_term(term)
     context = _format_context(results)
 
     criteria_parts: list[str] = []
@@ -101,20 +89,15 @@ def build_chat_messages(
         criteria_parts.append(f"Language: {language}")
     criteria = ", ".join(criteria_parts) if criteria_parts else "General search"
 
-    user_msg = (
-        f"The user searched for: {criteria}\n\n"
-        f"Here are the clusters that matched:\n\n{context}\n\n"
-        "Walk through each cluster and explain what it contains in plain language. "
-        "For each one, mention:\n"
-        "- What the clause says (quote briefly)\n"
-        "- What was codified from it\n"
-        "- Any queries or discussions that took place on it\n"
-        "- Which client environment (bank) it sits in\n\n"
-        "Then briefly note any patterns or differences across the clusters."
-    )
+    system_prompt = template.system_prompt
+    lang_instruction = get_language_instruction(results)
+    if lang_instruction:
+        system_prompt += f"\n\nLanguage note: {lang_instruction}"
+
+    user_msg = template.user_template.format(criteria=criteria, context=context)
 
     return [
-        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_msg},
     ]
 

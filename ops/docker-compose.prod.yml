@@ -1,0 +1,78 @@
+# Production Docker Compose — hardened, no dev volumes.
+# Usage: docker compose -f ops/docker-compose.prod.yml up -d
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:${PORT:-8000}"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - AUTH_ENABLED=${AUTH_ENABLED:-false}
+      - JUMPCLOUD_ISSUER=${JUMPCLOUD_ISSUER:-}
+      - JUMPCLOUD_CLIENT_ID=${JUMPCLOUD_CLIENT_ID:-}
+      - JUMPCLOUD_AUDIENCE=${JUMPCLOUD_AUDIENCE:-}
+      - JUMPCLOUD_JWKS_URL=${JUMPCLOUD_JWKS_URL:-}
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+      - RATE_LIMIT_PER_MINUTE=${RATE_LIMIT_PER_MINUTE:-0}
+      - API_KEY_REQUIRED=${API_KEY_REQUIRED:-false}
+      - API_KEY=${API_KEY:-}
+      - LLM_ENABLED=${LLM_ENABLED:-true}
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://localhost:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3:8b-instruct}
+      - LLM_TEMPERATURE=${LLM_TEMPERATURE:-0.1}
+      - LLM_MAX_TOKENS=${LLM_MAX_TOKENS:-1024}
+      - ALLOWED_CLIENTS=${ALLOWED_CLIENTS:-Bank_A,Bank_B,Bank_C}
+      - PROMPT_VERSION=${PROMPT_VERSION:-v1}
+      - PORT=${PORT:-8000}
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 4G
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:${PORT:-8000}/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - internal
+    read_only: true
+    tmpfs:
+      - /tmp
+
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=contract_ai
+      - POSTGRES_USER=${DB_USER:-contract_ai_app}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 2G
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-contract_ai_app} -d contract_ai"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  pgdata:

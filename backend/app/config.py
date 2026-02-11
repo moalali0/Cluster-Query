@@ -22,6 +22,22 @@ class Settings(BaseSettings):
     llm_temperature: float = 0.1
     llm_max_tokens: int = 1024
 
+    # --- Auth (JumpCloud OIDC) ---
+    auth_enabled: bool = False                # flip to True behind VPN
+    jumpcloud_issuer: str = ""                # TODO: e.g. "https://oauth.id.jumpcloud.com/"
+    jumpcloud_client_id: str = ""             # TODO: from JumpCloud app config
+    jumpcloud_audience: str = ""              # TODO: API audience identifier
+    jumpcloud_jwks_url: str = ""              # TODO: e.g. "https://oauth.id.jumpcloud.com/.well-known/jwks.json"
+
+    # --- Security ---
+    cors_origins: str = "*"                   # comma-separated, restrict in prod
+    rate_limit_per_minute: int = 0            # 0 = disabled
+    api_key_required: bool = False
+    api_key: str = ""                         # TODO: set in prod
+
+    # --- Prompt Engineering ---
+    prompt_version: str = "v1"                # bump when prompts change
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     @model_validator(mode="after")
@@ -40,6 +56,10 @@ class Settings(BaseSettings):
     @property
     def allowed_client_list(self) -> list[str]:
         return [c.strip() for c in self.allowed_clients.split(",") if c.strip()]
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
 
 settings = Settings()
