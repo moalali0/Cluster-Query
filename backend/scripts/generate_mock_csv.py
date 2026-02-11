@@ -40,8 +40,12 @@ def main() -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with input_path.open("r", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        rows = list(reader)
+        # Skip comment lines (start with #) before feeding to DictReader
+        clean_lines = [line for line in f if not line.strip().startswith("#")]
+
+    import io
+    reader = csv.DictReader(io.StringIO("".join(clean_lines)))
+    rows = list(reader)
 
     # Group rows by Cluster ID
     clusters: dict[str, list[dict]] = defaultdict(list)
@@ -55,9 +59,9 @@ def main() -> None:
         # Deterministic UUID from cluster ID for reproducibility
         uid = str(uuid5(NAMESPACE_DNS, cluster_id))
 
-        # Client from Tags (first segment, e.g. "Bank_A" from "Bank_A;ISDA;2002")
-        tags = first.get("Tags", "")
-        client_id = tags.split(";")[0] if tags else "Unknown"
+        # Client from Tags (e.g. "Bank_A")
+        tags = first.get("Tags", "").strip()
+        client_id = tags.split(";")[0].strip() if tags else "Unknown"
 
         # Text content (same across all rows in a cluster)
         text_content = first.get("Text", "")
@@ -84,11 +88,12 @@ def main() -> None:
 
         # Build query_history from agreement context
         agreement_ref = first.get("Agreement Ref", "")
-        tag_parts = tags.split(";")
-        agreement_type = tag_parts[1] if len(tag_parts) > 1 else "Agreement"
+        operation = first.get("Operation", "Capture")
+        # Derive a meaningful term label for the query history
+        primary_term = next(iter(codified), "clause")
         history = [
             {
-                "query": f"Please confirm codification approach for {agreement_type} clause ({agreement_ref}).",
+                "query": f"Please confirm {operation.lower()} approach for {primary_term} ({agreement_ref}).",
                 "role": "Analyst",
                 "date": dt.date().isoformat(),
             },

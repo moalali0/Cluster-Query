@@ -1,53 +1,50 @@
 Agt. ID,Agreement Ref,Doc id,Cluster,Tags,Operation,Term,Attribute,Value,Row ID,Text,Clusterpoint Date,Datapoint Date
-101,BARCLAYS-001,DOC-001,C-1001,Bank_A;ISDA;2002,Capture,Governing Law,Jurisdiction,English Law,R-001,This Agreement will be governed by and construed in accordance with English law. The parties irrevocably submit to the non-exclusive jurisdiction of the English courts.,2023-01-01,2023-01-01
-101,BARCLAYS-001,DOC-001,C-1001,Bank_A;ISDA;2002,Capture,Governing Law,Exclusive,No,R-002,This Agreement will be governed by and construed in accordance with English law. The parties irrevocably submit to the non-exclusive jurisdiction of the English courts.,2023-01-01,2023-01-01
-101,BARCLAYS-001,DOC-001,C-1001,Bank_A;ISDA;2002,Capture,Governing Law,Process Agent,None,R-003,This Agreement will be governed by and construed in accordance with English law. The parties irrevocably submit to the non-exclusive jurisdiction of the English courts.,2023-01-01,2023-01-01
-104,GS-002,DOC-004,C-2001,Bank_A;GMRA;2000,Capture,Governing Law,Jurisdiction,English Law,R-004,This Agreement shall be governed by and interpreted in accordance with English law.,2023-04-12,2023-04-12
-104,GS-002,DOC-004,C-2001,Bank_A;GMRA;2000,Capture,Governing Law,Exclusive,Yes,R-005,This Agreement shall be governed by and interpreted in accordance with English law.,2023-04-12,2023-04-12
-105,JPM-101,DOC-005,C-2002,Bank_B;ISDA;1992,Capture,Governing Law,Jurisdiction,New York Law,R-006,This Agreement will be governed by and construed in accordance with the laws of the State of New York (without reference to choice of law doctrine).,2023-05-15,2023-05-15
-105,JPM-101,DOC-005,C-2002,Bank_B;ISDA;1992,Capture,Governing Law,Exclusive,Yes,R-007,This Agreement will be governed by and construed in accordance with the laws of the State of New York (without reference to choice of law doctrine).,2023-05-15,2023-05-15
-105,JPM-101,DOC-005,C-2002,Bank_B;ISDA;1992,Capture,Governing Law,Jury Waiver,Yes,R-008,This Agreement will be governed by and construed in accordance with the laws of the State of New York (without reference to choice of law doctrine).,2023-05-15,2023-05-15
-106,BNP-202,DOC-006,C-2003,Bank_B;CSA;VM,Capture,Governing Law,Jurisdiction,French Law,R-009,This Agreement is governed by French law. The courts within the jurisdiction of the Paris Court of Appeal shall have exclusive jurisdiction.,2023-06-20,2023-06-20
-106,BNP-202,DOC-006,C-2003,Bank_B;CSA;VM,Capture,Governing Law,Exclusive,Yes,R-010,This Agreement is governed by French law. The courts within the jurisdiction of the Paris Court of Appeal shall have exclusive jurisdiction.,2023-06-20,2023-06-20
-106,BNP-202,DOC-006,C-2003,Bank_B;CSA;VM,Capture,Governing Law,Court,Paris Court of Appeal,R-011,This Agreement is governed by French law. The courts within the jurisdiction of the Paris Court of Appeal shall have exclusive jurisdiction.,2023-06-20,2023-06-20
-107,DEU-303,DOC-007,C-2004,Bank_C;GMRA;2011,Capture,Governing Law,Jurisdiction,English Law,R-012,This Agreement and any non-contractual obligations arising out of or in connection with it are governed by English law.,2023-07-01,2023-07-01
-107,DEU-303,DOC-007,C-2004,Bank_C;GMRA;2011,Capture,Governing Law,Note,Includes non-contractual obligations,R-013,This Agreement and any non-contractual obligations arising out of or in connection with it are governed by English law.,2023-07-01,2023-07-01
-108,SOCGEN-404,DOC-008,C-2005,Bank_B;EFET;Power,Capture,Governing Law,Jurisdiction,German Law,R-014,This General Agreement shall be construed and governed by the substantive law of the Federal Republic of Germany.,2023-07-15,2023-07-15
-108,SOCGEN-404,DOC-008,C-2005,Bank_B;EFET;Power,Capture,Governing Law,Exclusive,No,R-015,This General Agreement shall be construed and governed by the substantive law of the Federal Republic of Germany.,2023-07-15,2023-07-15
-108,SOCGEN-404,DOC-008,C-2005,Bank_B;EFET;Power,Capture,Governing Law,Use of English Language,Yes,R-016,This General Agreement shall be construed and governed by the substantive law of the Federal Republic of Germany.,2023-07-15,2023-07-15
-109,HSBC-505,DOC-009,C-2006,Bank_A;ISDA;2002,Capture,Governing Law,Jurisdiction,Irish Law,R-017,This Agreement will be governed by and construed in accordance with the laws of Ireland.,2023-08-01,2023-08-01
-109,HSBC-505,DOC-009,C-2006,Bank_A;ISDA;2002,Capture,Governing Law,Exclusive,Yes,R-018,This Agreement will be governed by and construed in accordance with the laws of Ireland.,2023-08-01,2023-08-01
-109,HSBC-505,DOC-009,C-2006,Bank_A;ISDA;2002,Capture,Governing Law,Process Agent,Maples and Calder,R-019,This Agreement will be governed by and construed in accordance with the laws of Ireland.,2023-08-01,2023-08-01
-110,NOMURA-606,DOC-010,C-2007,Bank_C;ISDA;1992,Capture,Governing Law,Jurisdiction,Japanese Law,R-020,This Agreement will be governed by and construed in accordance with the laws of Japan.,2023-08-15,2023-08-15
-110,NOMURA-606,DOC-010,C-2007,Bank_C;ISDA;1992,Capture,Governing Law,Court,Tokyo District Court,R-021,This Agreement will be governed by and construed in accordance with the laws of Japan.,2023-08-15,2023-08-15
-110,NOMURA-606,DOC-010,C-2007,Bank_C;ISDA;1992,Capture,Governing Law,Language,English prevails,R-022,This Agreement will be governed by and construed in accordance with the laws of Japan.,2023-08-15,2023-08-15
-111,MS-707,DOC-011,C-2008,Bank_A;CSA;IM,Capture,Governing Law,Jurisdiction,New York Law,R-023,The parties hereby irrevocably submit to the exclusive jurisdiction of the Courts of the State of New York.,2023-09-01,2023-09-01
-111,MS-707,DOC-011,C-2008,Bank_A;CSA;IM,Capture,Governing Law,Exclusive,Yes,R-024,The parties hereby irrevocably submit to the exclusive jurisdiction of the Courts of the State of New York.,2023-09-01,2023-09-01
-111,MS-707,DOC-011,C-2008,Bank_A;CSA;IM,Capture,Governing Law,Waiver of Immunity,Yes,R-025,The parties hereby irrevocably submit to the exclusive jurisdiction of the Courts of the State of New York.,2023-09-01,2023-09-01
-112,UBS-808,DOC-012,C-2009,Bank_B;GMRA;2000,Capture,Governing Law,Jurisdiction,Swiss Law,R-026,This Agreement is subject to Swiss law. The place of jurisdiction is Zurich.,2023-09-15,2023-09-15
-112,UBS-808,DOC-012,C-2009,Bank_B;GMRA;2000,Capture,Governing Law,Court,Zurich,R-027,This Agreement is subject to Swiss law. The place of jurisdiction is Zurich.,2023-09-15,2023-09-15
-112,UBS-808,DOC-012,C-2009,Bank_B;GMRA;2000,Capture,Governing Law,Convention,Lugano Convention applies,R-028,This Agreement is subject to Swiss law. The place of jurisdiction is Zurich.,2023-09-15,2023-09-15
-113,RBS-909,DOC-013,C-2010,Bank_A;ISDA;2002,Capture,Governing Law,Jurisdiction,Scots Law,R-029,This Agreement will be governed by and construed in accordance with the laws of Scotland.,2023-10-01,2023-10-01
-113,RBS-909,DOC-013,C-2010,Bank_A;ISDA;2002,Capture,Governing Law,Exclusive,Yes,R-030,This Agreement will be governed by and construed in accordance with the laws of Scotland.,2023-10-01,2023-10-01
-113,RBS-909,DOC-013,C-2010,Bank_A;ISDA;2002,Capture,Governing Law,Process Agent,Law Society of Scotland,R-031,This Agreement will be governed by and construed in accordance with the laws of Scotland.,2023-10-01,2023-10-01
-114,SANT-1010,DOC-014,C-2011,Bank_C;ISDA;1992,Capture,Governing Law,Jurisdiction,English Law,R-032,Governed by English Law.,2023-10-15,2023-10-15
-114,SANT-1010,DOC-014,C-2011,Bank_C;ISDA;1992,Capture,Governing Law,Note,Extremely short form clause,R-033,Governed by English Law.,2023-10-15,2023-10-15
-115,BOA-1111,DOC-015,C-2012,Bank_A;NAESB,Capture,Governing Law,Jurisdiction,New York Law,R-034,This Contract shall be governed by the laws of the State of New York.,2023-10-20,2023-10-20
-115,BOA-1111,DOC-015,C-2012,Bank_A;NAESB,Capture,Governing Law,Exclusive,No,R-035,This Contract shall be governed by the laws of the State of New York.,2023-10-20,2023-10-20
-115,BOA-1111,DOC-015,C-2012,Bank_A;NAESB,Capture,Governing Law,UCC Applied,Yes,R-036,This Contract shall be governed by the laws of the State of New York.,2023-10-20,2023-10-20
-116,DEBUG-1212,DOC-016,C-2013,Bank_B;TEST,Capture,Governing Law,Jurisdiction,Hong Kong Law,R-037,This Agreement shall be governed by and construed in accordance with the laws of the Hong Kong Special Administrative Region.,2023-11-01,2023-11-01
-116,DEBUG-1212,DOC-016,C-2013,Bank_B;TEST,Capture,Governing Law,Rules,Arbitration at HKIAC,R-038,This Agreement shall be governed by and construed in accordance with the laws of the Hong Kong Special Administrative Region.,2023-11-01,2023-11-01
-116,DEBUG-1212,DOC-016,C-2013,Bank_B;TEST,Capture,Governing Law,Exclusive,Yes,R-039,This Agreement shall be governed by and construed in accordance with the laws of the Hong Kong Special Administrative Region.,2023-11-01,2023-11-01
-117,DBS-1313,DOC-017,C-2014,Bank_C;ISDA;2002,Capture,Governing Law,Jurisdiction,Singapore Law,R-040,This Agreement will be governed by and construed in accordance with the laws of Singapore.,2023-11-15,2023-11-15
-117,DBS-1313,DOC-017,C-2014,Bank_C;ISDA;2002,Capture,Governing Law,Exclusive,No,R-041,This Agreement will be governed by and construed in accordance with the laws of Singapore.,2023-11-15,2023-11-15
-117,DBS-1313,DOC-017,C-2014,Bank_C;ISDA;2002,Capture,Governing Law,Contracts Act,Rights of Third Parties Excluded,R-042,This Agreement will be governed by and construed in accordance with the laws of Singapore.,2023-11-15,2023-11-15
-117,DBS-1313,DOC-017,C-2014,Bank_C;ISDA;2002,Capture,Governing Law,Process Agent,Allen & Gledhill,R-043,This Agreement will be governed by and construed in accordance with the laws of Singapore.,2023-11-15,2023-11-15
-118,ANZ-1414,DOC-018,C-2015,Bank_A;ISDA;2002,Capture,Governing Law,Jurisdiction,Australian Law (NSW),R-044,This Agreement will be governed by and construed in accordance with the laws of New South Wales.,2023-12-01,2023-12-01
-118,ANZ-1414,DOC-018,C-2015,Bank_A;ISDA;2002,Capture,Governing Law,Exclusive,Yes,R-045,This Agreement will be governed by and construed in accordance with the laws of New South Wales.,2023-12-01,2023-12-01
-118,ANZ-1414,DOC-018,C-2015,Bank_A;ISDA;2002,Capture,Governing Law,Court,Supreme Court of NSW,R-046,This Agreement will be governed by and construed in accordance with the laws of New South Wales.,2023-12-01,2023-12-01
-119,ING-1515,DOC-019,C-2016,Bank_B;GMRA;2011,Capture,Governing Law,Jurisdiction,Luxembourg Law,R-047,This Agreement shall be governed by the laws of the Grand Duchy of Luxembourg.,2023-12-10,2023-12-10
-119,ING-1515,DOC-019,C-2016,Bank_B;GMRA;2011,Capture,Governing Law,Language,French and English,R-048,This Agreement shall be governed by the laws of the Grand Duchy of Luxembourg.,2023-12-10,2023-12-10
-119,ING-1515,DOC-019,C-2016,Bank_B;GMRA;2011,Capture,Governing Law,Exclusive,Yes,R-049,This Agreement shall be governed by the laws of the Grand Duchy of Luxembourg.,2023-12-10,2023-12-10
-120,RBC-1616,DOC-020,C-2017,Bank_C;CSA;VM,Capture,Governing Law,Jurisdiction,Ontario Law,R-050,This Agreement will be governed by the laws of the Province of Ontario and the federal laws of Canada applicable therein.,2023-12-20,2023-12-20
-120,RBC-1616,DOC-020,C-2017,Bank_C;CSA;VM,Capture,Governing Law,Exclusive,Yes,R-051,This Agreement will be governed by the laws of the Province of Ontario and the federal laws of Canada applicable therein.,2023-12-20,2023-12-20
-120,RBC-1616,DOC-020,C-2017,Bank_C;CSA;VM,Capture,Governing Law,Waiver,Jury Trial Waived,R-052,This Agreement will be governed by the laws of the Province of Ontario and the federal laws of Canada applicable therein.,2023-12-20,2023-12-20
+# === ENGLISH LAW (STANDARD ISDA) ===
+101,BARC-ENG-001,DOC-101,C-ENG-01,Bank_A,Capture,Governing Law,Jurisdiction,English Law,R-001,This Agreement will be governed by and construed in accordance with English law.,2023-01-01,2023-01-01
+101,BARC-ENG-001,DOC-101,C-ENG-01,Bank_A,Capture,Governing Law,Exclusive,No,R-002,This Agreement will be governed by and construed in accordance with English law.,2023-01-01,2023-01-01
+102,HSBC-ENG-002,DOC-102,C-ENG-02,Bank_A,Capture,Governing Law,Jurisdiction,English Law,R-003,Governing Law: English Law.,2023-01-05,2023-01-05
+103,LLOYDS-ENG-003,DOC-103,C-ENG-03,Bank_B,Capture,Governing Law,Jurisdiction,English Law,R-004,This Agreement shall be governed by English law.,2023-01-10,2023-01-10
+104,RBS-ENG-004,DOC-104,C-ENG-04,Bank_B,Capture,Governing Law,Jurisdiction,English Law,R-005,The parties agree that this contract is subject to English Law.,2023-01-15,2023-01-15
+105,STD-ENG-005,DOC-105,C-ENG-05,Bank_C,Capture,Governing Law,Jurisdiction,English Law,R-006,This Agreement is governed by the laws of England.,2023-01-20,2023-01-20
+# === ENGLISH LAW (LONG FORM / COMPLEX) ===
+106,JPM-ENG-006,DOC-106,C-ENG-06,Bank_A,Capture,Governing Law,Jurisdiction,English Law,R-007,This Agreement and any non-contractual obligations arising out of or in connection with it are governed by English law.,2023-02-01,2023-02-01
+106,JPM-ENG-006,DOC-106,C-ENG-06,Bank_A,Capture,Governing Law,Non-Contractual,Included,R-008,This Agreement and any non-contractual obligations arising out of or in connection with it are governed by English law.,2023-02-01,2023-02-01
+107,MS-ENG-007,DOC-107,C-ENG-07,Bank_B,Capture,Governing Law,Jurisdiction,English Law,R-009,This Agreement will be governed by and construed in accordance with the laws of England and Wales.,2023-02-05,2023-02-05
+107,MS-ENG-007,DOC-107,C-ENG-07,Bank_B,Capture,Governing Law,Exact Wording,England and Wales,R-010,This Agreement will be governed by and construed in accordance with the laws of England and Wales.,2023-02-05,2023-02-05
+108,GS-ENG-008,DOC-108,C-ENG-08,Bank_C,Capture,Governing Law,Jurisdiction,English Law,R-011,The parties hereby irrevocably submit to the exclusive jurisdiction of the English courts.,2023-02-10,2023-02-10
+108,GS-ENG-008,DOC-108,C-ENG-08,Bank_C,Capture,Governing Law,Exclusive,Yes,R-012,The parties hereby irrevocably submit to the exclusive jurisdiction of the English courts.,2023-02-10,2023-02-10
+109,CITI-ENG-009,DOC-109,C-ENG-09,Bank_A,Capture,Governing Law,Jurisdiction,English Law,R-013,Governing Law and Jurisdiction: English Law and the High Court of Justice in London.,2023-02-15,2023-02-15
+# === ENGLISH LAW (VARIATIONS) ===
+110,UBS-ENG-010,DOC-110,C-ENG-10,Bank_B,Capture,Governing Law,Jurisdiction,English Law,R-014,This Deed shall be governed by and construed in accordance with English law.,2023-03-01,2023-03-01
+111,CS-ENG-011,DOC-111,C-ENG-11,Bank_C,Capture,Governing Law,Jurisdiction,English Law,R-015,This Confirmation shall be governed by English law.,2023-03-05,2023-03-05
+112,NOM-ENG-012,DOC-112,C-ENG-12,Bank_A,Capture,Governing Law,Jurisdiction,English Law,R-016,This Letter Agreement is governed by English law.,2023-03-10,2023-03-10
+113,SOCGEN-ENG-013,DOC-113,C-ENG-13,Bank_B,Capture,Governing Law,Jurisdiction,English Law,R-017,This Amendment is subject to English law.,2023-03-15,2023-03-15
+114,BNP-ENG-014,DOC-114,C-ENG-14,Bank_C,Capture,Governing Law,Jurisdiction,English Law,R-018,Applicable Law: The laws of England.,2023-03-20,2023-03-20
+115,DEU-ENG-015,DOC-115,C-ENG-15,Bank_A,Capture,Governing Law,Jurisdiction,English Law,R-019,This transaction is governed by English law.,2023-04-01,2023-04-01
+116,ING-ENG-016,DOC-116,C-ENG-16,Bank_B,Capture,Governing Law,Jurisdiction,English Law,R-020,The construction, validity and performance of this Agreement shall be governed by English law.,2023-04-05,2023-04-05
+117,SANT-ENG-017,DOC-117,C-ENG-17,Bank_C,Capture,Governing Law,Jurisdiction,English Law,R-021,This Master Agreement is governed by English law.,2023-04-10,2023-04-10
+118,RBC-ENG-018,DOC-118,C-ENG-18,Bank_A,Capture,Governing Law,Jurisdiction,English Law,R-022,English law governs this Agreement.,2023-04-15,2023-04-15
+119,TD-ENG-019,DOC-119,C-ENG-19,Bank_B,Capture,Governing Law,Jurisdiction,English Law,R-023,This schedule is governed by English law.,2023-04-20,2023-04-20
+120,BMO-ENG-020,DOC-120,C-ENG-20,Bank_C,Capture,Governing Law,Jurisdiction,English Law,R-024,This Annex shall be governed by and construed in accordance with English law.,2023-05-01,2023-05-01
+121,MIZ-ENG-021,DOC-121,C-ENG-21,Bank_A,Capture,Governing Law,Jurisdiction,English Law,R-025,The validity, construction and performance of this Agreement shall be governed by the laws of England.,2023-05-05,2023-05-05
+122,SMBC-ENG-022,DOC-122,C-ENG-22,Bank_B,Capture,Governing Law,Jurisdiction,English Law,R-026,This Guarantee is governed by English law.,2023-05-10,2023-05-10
+123,MUFG-ENG-023,DOC-123,C-ENG-23,Bank_C,Capture,Governing Law,Jurisdiction,English Law,R-027,This Accession Letter is governed by English law.,2023-05-15,2023-05-15
+124,NOR-ENG-024,DOC-124,C-ENG-24,Bank_A,Capture,Governing Law,Jurisdiction,English Law,R-028,This Novation Agreement is governed by English law.,2023-06-01,2023-06-01
+125,SEB-ENG-025,DOC-125,C-ENG-25,Bank_B,Capture,Governing Law,Jurisdiction,English Law,R-029,This Side Letter is governed by English law.,2023-06-05,2023-06-05
+# === NEW YORK LAW ===
+201,JPM-NY-01,DOC-201,C-NY-01,Bank_A,Capture,Governing Law,Jurisdiction,New York Law,R-101,This Agreement will be governed by and construed in accordance with the laws of the State of New York.,2023-01-01,2023-01-01
+202,GS-NY-02,DOC-202,C-NY-02,Bank_A,Capture,Governing Law,Jurisdiction,New York Law,R-102,The parties submit to the exclusive jurisdiction of the Courts of the State of New York.,2023-02-01,2023-02-01
+203,MS-NY-03,DOC-203,C-NY-03,Bank_B,Capture,Governing Law,Jurisdiction,New York Law,R-103,Governed by New York law.,2023-03-01,2023-03-01
+204,CITI-NY-04,DOC-204,C-NY-04,Bank_B,Capture,Governing Law,Jurisdiction,New York Law,R-104,This Confirmation is governed by the laws of the State of New York.,2023-04-01,2023-04-01
+205,BOA-NY-05,DOC-205,C-NY-05,Bank_C,Capture,Governing Law,Jurisdiction,New York Law,R-105,This Contract shall be governed by NY Law.,2023-05-01,2023-05-01
+# === FRENCH LAW ===
+301,BNP-FR-01,DOC-301,C-FR-01,Bank_C,Capture,Governing Law,Jurisdiction,French Law,R-201,This Agreement is governed by French law.,2023-06-01,2023-06-01
+302,SOCGEN-FR-02,DOC-302,C-FR-02,Bank_A,Capture,Governing Law,Jurisdiction,French Law,R-202,La présente Convention est soumise au droit français.,2023-07-01,2023-07-01
+303,CACIB-FR-03,DOC-303,C-FR-03,Bank_B,Capture,Governing Law,Jurisdiction,French Law,R-203,French law applies to this Agreement.,2023-08-01,2023-08-01
+# === IRISH LAW ===
+401,AIB-IE-01,DOC-401,C-IE-01,Bank_B,Capture,Governing Law,Jurisdiction,Irish Law,R-301,This Agreement will be governed by and construed in accordance with the laws of Ireland.,2023-09-01,2023-09-01
+402,BOI-IE-02,DOC-402,C-IE-02,Bank_C,Capture,Governing Law,Jurisdiction,Irish Law,R-302,Governed by Irish Law.,2023-10-01,2023-10-01
+# === OTHER JURISDICTIONS ===
+501,DEU-DE-01,DOC-501,C-DE-01,Bank_A,Capture,Governing Law,Jurisdiction,German Law,R-401,This Agreement is subject to German law.,2023-11-01,2023-11-01
+601,HSBC-HK-01,DOC-601,C-HK-01,Bank_A,Capture,Governing Law,Jurisdiction,Hong Kong Law,R-501,This Agreement shall be governed by Hong Kong law.,2023-12-01,2023-12-01
+701,DBS-SG-01,DOC-701,C-SG-01,Bank_B,Capture,Governing Law,Jurisdiction,Singapore Law,R-601,This Agreement will be governed by the laws of Singapore.,2023-12-15,2023-12-15
