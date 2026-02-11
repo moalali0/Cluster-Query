@@ -1,9 +1,14 @@
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_database_url: str = "postgresql://contract_ai_app:contract_ai_app@localhost:5432/contract_ai"
-    ingest_database_url: str = "postgresql://contract_ai_ingest:contract_ai_ingest@localhost:5432/contract_ai"
+    # Cloud platforms (Render, Railway) provide a single DATABASE_URL.
+    # When set, it is used for both app and ingest connections.
+    database_url: str = ""
+
+    app_database_url: str = ""
+    ingest_database_url: str = ""
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     similarity_threshold: float = 0.62
@@ -18,6 +23,19 @@ class Settings(BaseSettings):
     llm_max_tokens: int = 1024
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+
+    @model_validator(mode="after")
+    def _resolve_db_urls(self):
+        base = self.database_url
+        # Render uses postgres://, psycopg3 expects postgresql://
+        if base.startswith("postgres://"):
+            base = "postgresql://" + base[len("postgres://"):]
+
+        if not self.app_database_url:
+            self.app_database_url = base or "postgresql://contract_ai_app:contract_ai_app@localhost:5432/contract_ai"
+        if not self.ingest_database_url:
+            self.ingest_database_url = base or "postgresql://contract_ai_ingest:contract_ai_ingest@localhost:5432/contract_ai"
+        return self
 
     @property
     def allowed_client_list(self) -> list[str]:

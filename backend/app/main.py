@@ -2,13 +2,15 @@ import asyncio
 import json
 import logging
 import time
+from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, Header
-
-logger = logging.getLogger(__name__)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
+
+logger = logging.getLogger(__name__)
 
 from .audit import log_api_event
 from .config import settings
@@ -417,3 +419,11 @@ async def api_chat_structured_stream(
             )
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+
+# ---------- Static frontend (production only) ----------
+# In production the React build is copied to /app/static by the Dockerfile.
+# Mount AFTER all API routes so /api/* takes priority.
+_static_dir = Path(__file__).resolve().parent / "static"
+if _static_dir.is_dir():
+    app.mount("/", StaticFiles(directory=str(_static_dir), html=True), name="static")
