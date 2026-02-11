@@ -11,34 +11,74 @@ from .config import settings
 logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = (
-    "You are a contract precedent analyst. Your job is to summarise retrieved clause clusters "
-    "for the user. Rules:\n"
-    "1. ONLY use information from the provided evidence clusters. Never fabricate.\n"
-    "2. Cite cluster IDs in square brackets, e.g. [cluster_id].\n"
-    "3. Do NOT provide legal advice. State observations from the data.\n"
-    "4. Be concise. Use bullet points when listing multiple precedents.\n"
-    "5. If no relevant evidence is provided, say so clearly."
+    "You are a helpful contract precedent assistant. "
+    "You explain what was found in a simple, conversational way — like a senior colleague briefing an analyst.\n\n"
+    "Rules:\n"
+    "1. ONLY use information from the provided clusters. Never make things up.\n"
+    "2. Refer to clusters by their short ID in square brackets, e.g. [7a4638ab].\n"
+    "3. Do NOT give legal advice. Just describe what the data shows.\n"
+    "4. Use plain English. Avoid jargon unless it comes directly from the data.\n"
+    "5. For each cluster, explain:\n"
+    "   - What the clause language says (quote it briefly)\n"
+    "   - What was codified (the structured fields and values)\n"
+    "   - If there is a query history, mention what was discussed between analyst and client\n"
+    "   - Which client environment (bank) it belongs to\n"
+    "6. After covering individual clusters, briefly note any patterns — e.g. if multiple banks "
+    "use similar language, or if there are notable differences.\n"
+    "7. Keep it concise. A few sentences per cluster is enough.\n"
+    "8. If no relevant evidence is provided, say so clearly."
 )
 
 _TIMEOUT = httpx.Timeout(connect=60.0, read=300.0, write=10.0, pool=10.0)
 
 
 def _format_context(results: list[dict[str, Any]]) -> str:
-    """Format retrieved clusters into context for the LLM."""
+    """Format retrieved clusters into plain-English context for the LLM."""
     if not results:
-        return "No evidence clusters were retrieved."
+        return "No clusters were retrieved."
 
     parts: list[str] = []
     for r in results:
         cid = str(r["id"])[:8]
         client = r.get("client_id", "unknown")
-        score = float(r.get("relevance_score", 0))
-        codified = json.dumps(r.get("codified_data") or {}, indent=2)
-        text = (r.get("text_content") or "")[:500]
+
+        # Codified fields as readable key-value pairs
+        codified_data = r.get("codified_data") or {}
+        codified_lines: list[str] = []
+        for term_key, attrs in codified_data.items():
+            if isinstance(attrs, dict):
+                for attr_key, val in attrs.items():
+                    codified_lines.append(f"  {term_key} > {attr_key}: {val}")
+            else:
+                codified_lines.append(f"  {term_key}: {attrs}")
+        codified_str = "\n".join(codified_lines) if codified_lines else "  (none)"
+
+        # Clause language
+        text = (r.get("text_content") or "").strip()
+        clause_str = f'"{text[:600]}"' if text else "(no clause text)"
+
+        # Query history
+        history = r.get("query_history") or []
+        if isinstance(history, str):
+            try:
+                history = json.loads(history)
+            except (json.JSONDecodeError, TypeError):
+                history = []
+        history_lines: list[str] = []
+        for entry in history:
+            if isinstance(entry, dict):
+                role = entry.get("role", "Unknown")
+                msg = entry.get("query") or entry.get("response") or ""
+                if msg:
+                    history_lines.append(f"  {role}: {msg}")
+        history_str = "\n".join(history_lines) if history_lines else "  (no queries)"
+
         parts.append(
-            f"--- Cluster {cid} (bank={client}, relevance={score:.3f}) ---\n"
-            f"Codified data:\n{codified}\n"
-            f"Clause text:\n{text}\n"
+            f"--- Cluster {cid} ---\n"
+            f"Client environment: {client}\n"
+            f"Clause language: {clause_str}\n"
+            f"Codified fields:\n{codified_str}\n"
+            f"Query history:\n{history_str}\n"
         )
     return "\n".join(parts)
 
@@ -62,10 +102,15 @@ def build_chat_messages(
     criteria = ", ".join(criteria_parts) if criteria_parts else "General search"
 
     user_msg = (
-        f"Search criteria: {criteria}\n\n"
-        f"Retrieved evidence:\n{context}\n\n"
-        "Please summarise the relevant precedents found across these clusters. "
-        "Highlight key patterns, differences between banks, and cite cluster IDs."
+        f"The user searched for: {criteria}\n\n"
+        f"Here are the clusters that matched:\n\n{context}\n\n"
+        "Walk through each cluster and explain what it contains in plain language. "
+        "For each one, mention:\n"
+        "- What the clause says (quote briefly)\n"
+        "- What was codified from it\n"
+        "- Any queries or discussions that took place on it\n"
+        "- Which client environment (bank) it sits in\n\n"
+        "Then briefly note any patterns or differences across the clusters."
     )
 
     return [
