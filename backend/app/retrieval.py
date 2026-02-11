@@ -52,3 +52,81 @@ def search_clusters_across_clients(
 
     combined.sort(key=lambda row: float(row["relevance_score"]), reverse=True)
     return combined[:top_k]
+
+
+def search_clusters_structured(
+    conn,
+    client_id: str,
+    top_k: int,
+    term: str | None = None,
+    attribute: str | None = None,
+    embedding: list[float] | None = None,
+) -> list[dict]:
+    """Structured search combining JSONB filters with optional embedding similarity."""
+    set_client_scope(conn, client_id)
+
+    conditions = ["client_id = %(client_id)s"]
+    params: dict = {"client_id": client_id, "top_k": top_k}
+
+    if term and attribute:
+        conditions.append("jsonb_exists(codified_data, %(term)s)")
+        conditions.append("jsonb_exists(codified_data->%(term)s, %(attribute)s)")
+        params["term"] = term
+        params["attribute"] = attribute
+    elif term:
+        conditions.append("jsonb_exists(codified_data, %(term)s)")
+        params["term"] = term
+    elif attribute:
+        conditions.append(
+            "EXISTS (SELECT 1 FROM jsonb_each(codified_data) AS kv WHERE jsonb_exists(kv.value, %(attribute)s))"
+        )
+        params["attribute"] = attribute
+
+    where_clause = " AND ".join(conditions)
+
+    if embedding:
+        vector_literal = to_pgvector_literal(embedding)
+        params["vector"] = vector_literal
+        query = f"""
+            SELECT
+                id, client_id, text_content, codified_data,
+                query_history, doc_count, last_updated,
+                1 - (embedding <=> %(vector)s::vector) AS relevance_score
+            FROM clusters
+            WHERE {where_clause}
+            ORDER BY embedding <=> %(vector)s::vector
+            LIMIT %(top_k)s
+        """
+    else:
+        query = f"""
+            SELECT
+                id, client_id, text_content, codified_data,
+                query_history, doc_count, last_updated,
+                1.0 AS relevance_score
+            FROM clusters
+            WHERE {where_clause}
+            ORDER BY last_updated DESC NULLS LAST
+            LIMIT %(top_k)s
+        """
+
+    with conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(query, params)
+        return list(cur.fetchall())
+
+
+def search_clusters_structured_across_clients(
+    conn,
+    client_ids: list[str],
+    top_k: int,
+    term: str | None = None,
+    attribute: str | None = None,
+    embedding: list[float] | None = None,
+) -> list[dict]:
+    combined: list[dict] = []
+    for client_id in client_ids:
+        combined.extend(
+            search_clusters_structured(conn, client_id, top_k, term, attribute, embedding)
+        )
+
+    combined.sort(key=lambda row: float(row["relevance_score"]), reverse=True)
+    return combined[:top_k]

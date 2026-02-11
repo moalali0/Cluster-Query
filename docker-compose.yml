@@ -26,11 +26,16 @@ services:
       INGEST_DATABASE_URL: postgresql://contract_ai_ingest:contract_ai_ingest@db:5432/contract_ai
       API_HOST: 0.0.0.0
       API_PORT: 8000
-      SIMILARITY_THRESHOLD: 0.62
+      SIMILARITY_THRESHOLD: 0.25
       DEFAULT_TOP_K: 5
       ALLOWED_CLIENTS: Bank_A,Bank_B
+      OLLAMA_HOST: http://host.docker.internal:11434
+      OLLAMA_MODEL: llama3.2:latest
+      LLM_ENABLED: "true"
     ports:
       - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./backend:/app
       - ./data:/data
@@ -43,7 +48,7 @@ services:
       context: ./frontend
     container_name: contract-ai-frontend
     environment:
-      VITE_API_BASE_URL: http://localhost:8000
+      VITE_API_BASE_URL: ""
     ports:
       - "5173:5173"
     volumes:

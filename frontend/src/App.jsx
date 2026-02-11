@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
 const USER_ID = "demo-analyst";
 
 function formatJson(value) {
@@ -105,7 +105,9 @@ function ChatPanel({ answer, citations, evidenceFound }) {
 }
 
 export default function App() {
-  const [query, setQuery] = useState("");
+  const [term, setTerm] = useState("");
+  const [attribute, setAttribute] = useState("");
+  const [language, setLanguage] = useState("");
   const [loading, setLoading] = useState(false);
   const [chatStreaming, setChatStreaming] = useState(false);
   const [error, setError] = useState("");
@@ -115,14 +117,24 @@ export default function App() {
   const [chatCitations, setChatCitations] = useState([]);
   const [chatEvidenceFound, setChatEvidenceFound] = useState(false);
 
-  async function performSearch(activeQuery) {
-    const response = await fetch(`${API_BASE}/api/search`, {
+  const hasInput = term.trim() || attribute.trim() || (language.trim().length >= 2);
+
+  function buildBody(extra = {}) {
+    const body = {};
+    if (term.trim()) body.term = term.trim();
+    if (attribute.trim()) body.attribute = attribute.trim();
+    if (language.trim()) body.language = language.trim();
+    return { ...body, ...extra };
+  }
+
+  async function performSearch() {
+    const response = await fetch(`${API_BASE}/api/search/structured`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-user-id": USER_ID,
       },
-      body: JSON.stringify({ query: activeQuery, top_k: 5 }),
+      body: JSON.stringify(buildBody({ top_k: 5 })),
     });
 
     if (!response.ok) {
@@ -136,19 +148,19 @@ export default function App() {
     return payload;
   }
 
-  async function streamChat(activeQuery) {
+  async function streamChat() {
     setChatStreaming(true);
     setChatAnswer("");
     setChatCitations([]);
     setChatEvidenceFound(false);
 
-    const response = await fetch(`${API_BASE}/api/chat/stream`, {
+    const response = await fetch(`${API_BASE}/api/chat/structured/stream`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-user-id": USER_ID,
       },
-      body: JSON.stringify({ query: activeQuery }),
+      body: JSON.stringify(buildBody()),
     });
 
     if (!response.ok || !response.body) {
@@ -180,6 +192,10 @@ export default function App() {
           setChatAnswer((prev) => prev + (parsed.payload.token || ""));
         }
 
+        if (parsed.event === "error") {
+          setChatAnswer((prev) => prev + `\n[LLM Error: ${parsed.payload.message || "unknown"}]\n`);
+        }
+
         if (parsed.event === "done") {
           setChatCitations(Array.isArray(parsed.payload.citations) ? parsed.payload.citations : []);
           setChatEvidenceFound(Boolean(parsed.payload.evidence_found));
@@ -204,7 +220,7 @@ export default function App() {
     setError("");
 
     try {
-      await performSearch(query.trim());
+      await performSearch();
     } catch (err) {
       setError(err.message || "Unexpected error");
     } finally {
@@ -213,14 +229,14 @@ export default function App() {
   }
 
   async function runAskStream() {
-    if (query.trim().length < 2) return;
+    if (!hasInput) return;
 
     setLoading(true);
     setError("");
 
     try {
-      await performSearch(query.trim());
-      await streamChat(query.trim());
+      await performSearch();
+      await streamChat();
     } catch (err) {
       setError(err.message || "Unexpected error");
       setChatStreaming(false);
@@ -239,19 +255,43 @@ export default function App() {
       </div>
 
       <form onSubmit={runSearch} className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
-        <div className="flex flex-col gap-3 md:flex-row">
-          <input
-            type="text"
-            placeholder="Ask: How was Governing Law treated for similar text?"
-            className="h-12 flex-1 rounded-xl border border-slate-300 px-4 text-sm outline-none ring-slate-200 focus:ring"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            required
-          />
+        <div className="mb-3 grid gap-3 md:grid-cols-3">
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">Term</label>
+            <input
+              type="text"
+              placeholder="e.g. Governing Law"
+              className="h-12 w-full rounded-xl border border-slate-300 px-4 text-sm outline-none ring-slate-200 focus:ring"
+              value={term}
+              onChange={(e) => setTerm(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">Attribute</label>
+            <input
+              type="text"
+              placeholder="e.g. Jurisdiction"
+              className="h-12 w-full rounded-xl border border-slate-300 px-4 text-sm outline-none ring-slate-200 focus:ring"
+              value={attribute}
+              onChange={(e) => setAttribute(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">Language</label>
+            <input
+              type="text"
+              placeholder="e.g. governed by laws of England"
+              className="h-12 w-full rounded-xl border border-slate-300 px-4 text-sm outline-none ring-slate-200 focus:ring"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="flex gap-3">
           <button
             type="submit"
             className="h-12 rounded-xl bg-slate-900 px-5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:opacity-60"
-            disabled={loading || chatStreaming || query.trim().length < 2}
+            disabled={loading || chatStreaming || !hasInput}
           >
             {loading && !chatStreaming ? "Searching..." : "Search"}
           </button>
@@ -259,9 +299,9 @@ export default function App() {
             type="button"
             onClick={runAskStream}
             className="h-12 rounded-xl bg-teal-700 px-5 text-sm font-semibold text-white transition hover:bg-teal-600 disabled:opacity-60"
-            disabled={loading || chatStreaming || query.trim().length < 2}
+            disabled={loading || chatStreaming || !hasInput}
           >
-            {chatStreaming ? "Streaming..." : "Ask (Stream)"}
+            {chatStreaming ? "Streaming..." : "Ask AI (Stream)"}
           </button>
         </div>
       </form>

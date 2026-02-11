@@ -2,6 +2,8 @@ CREATE INDEX IF NOT EXISTS idx_clusters_client_id ON clusters (client_id);
 CREATE INDEX IF NOT EXISTS idx_clusters_last_updated ON clusters (last_updated DESC);
 CREATE INDEX IF NOT EXISTS idx_clusters_embedding_hnsw
     ON clusters USING hnsw (embedding vector_cosine_ops);
+CREATE INDEX IF NOT EXISTS idx_clusters_codified_data_gin
+    ON clusters USING gin (codified_data jsonb_path_ops);
 
 CREATE INDEX IF NOT EXISTS idx_cluster_events_cluster ON cluster_events (cluster_id);
 CREATE INDEX IF NOT EXISTS idx_cluster_events_client ON cluster_events (client_id);
@@ -12,10 +14,12 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_endpoint_created ON audit_logs (endpoi
 GRANT SELECT ON clusters TO contract_ai_app;
 GRANT SELECT ON cluster_events TO contract_ai_app;
 GRANT SELECT, INSERT ON audit_logs TO contract_ai_app;
+GRANT USAGE, SELECT ON SEQUENCE audit_logs_audit_id_seq TO contract_ai_app;
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON clusters TO contract_ai_ingest;
 GRANT SELECT, INSERT, UPDATE, DELETE ON cluster_events TO contract_ai_ingest;
 GRANT SELECT, INSERT, UPDATE, DELETE ON audit_logs TO contract_ai_ingest;
+GRANT USAGE, SELECT ON SEQUENCE audit_logs_audit_id_seq TO contract_ai_ingest;
 
 ALTER TABLE clusters ENABLE ROW LEVEL SECURITY;
 ALTER TABLE cluster_events ENABLE ROW LEVEL SECURITY;

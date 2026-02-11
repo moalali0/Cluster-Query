@@ -10,6 +10,13 @@ class Settings(BaseSettings):
     default_top_k: int = 5
     allowed_clients: str = "Bank_A,Bank_B"
 
+    # Ollama / LLM settings
+    ollama_host: str = "http://host.docker.internal:11434"
+    ollama_model: str = "llama3.2:latest"  # production: "llama3:8b-instruct"
+    llm_enabled: bool = True
+    llm_temperature: float = 0.1
+    llm_max_tokens: int = 1024
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     @property
