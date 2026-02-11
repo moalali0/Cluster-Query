@@ -5,8 +5,26 @@ from psycopg_pool import ConnectionPool
 from .config import settings
 
 
-app_pool = ConnectionPool(conninfo=settings.app_database_url, min_size=1, max_size=10, timeout=30)
-ingest_pool = ConnectionPool(conninfo=settings.ingest_database_url, min_size=1, max_size=4, timeout=30)
+def _check_conn(conn):
+    conn.execute("SELECT 1")
+
+
+app_pool = ConnectionPool(
+    conninfo=settings.app_database_url,
+    min_size=1,
+    max_size=10,
+    timeout=30,
+    check=_check_conn,
+    max_idle=300,
+)
+ingest_pool = ConnectionPool(
+    conninfo=settings.ingest_database_url,
+    min_size=1,
+    max_size=4,
+    timeout=30,
+    check=_check_conn,
+    max_idle=300,
+)
 
 
 @contextmanager
