@@ -1,9 +1,12 @@
 import asyncio
 import json
+import logging
 import time
 from typing import Any
 
 from fastapi import FastAPI, Header
+
+logger = logging.getLogger(__name__)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
@@ -392,7 +395,8 @@ async def api_chat_structured_stream(
                     {"citations": citations, "evidence_found": True, "token_count": token_count},
                 )
             except Exception as exc:
-                yield _sse("error", {"message": f"LLM error: {exc}"})
+                logger.exception("LLM streaming failed")
+                yield _sse("error", {"message": f"LLM error: {repr(exc)}"})
                 # Fall back to template answer
                 answer, citations = _build_answer(filtered)
                 for token in answer.split(" "):

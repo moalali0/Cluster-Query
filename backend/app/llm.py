@@ -20,7 +20,7 @@ SYSTEM_PROMPT = (
     "5. If no relevant evidence is provided, say so clearly."
 )
 
-_TIMEOUT = httpx.Timeout(connect=10.0, read=120.0, write=10.0, pool=10.0)
+_TIMEOUT = httpx.Timeout(connect=60.0, read=300.0, write=10.0, pool=10.0)
 
 
 def _format_context(results: list[dict[str, Any]]) -> str:
