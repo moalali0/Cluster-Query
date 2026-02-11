@@ -35,23 +35,23 @@ function ResultCard({ item }) {
   const shortText = text.length > 220 && !expanded ? `${text.slice(0, 220)}...` : text;
 
   return (
-    <article id={`cluster-${item.id}`} className="scroll-mt-24 rounded-2xl border border-slate-200 bg-panel p-5 shadow-card">
+    <article id={`cluster-${item.id}`} className="scroll-mt-24 rounded-2xl border border-neutral-700/50 bg-panel p-5 shadow-card">
       <header className="mb-3 flex flex-wrap items-center gap-3">
-        <span className="rounded-md bg-slate-900 px-2 py-1 text-xs font-semibold text-white">{item.id}</span>
-        <span className="rounded-md bg-indigo-100 px-2 py-1 text-xs font-semibold text-indigo-900">{item.client_id}</span>
-        <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium">
+        <span className="rounded-md bg-accent px-2 py-1 text-xs font-semibold text-white">{item.id}</span>
+        <span className="rounded-md bg-accent-dim/40 px-2 py-1 text-xs font-semibold text-accent-light">{item.client_id}</span>
+        <span className="rounded-md bg-neutral-800 px-2 py-1 text-xs font-medium text-neutral-300">
           Relevance {Number(item.relevance_score).toFixed(3)}
         </span>
-        <span className="rounded-md bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-900">
+        <span className="rounded-md bg-neutral-800 px-2 py-1 text-xs font-medium text-accent-light">
           Used in {item.doc_count ?? 0} Docs
         </span>
       </header>
 
-      <p className="mb-2 text-sm leading-relaxed text-slate-800">{shortText}</p>
+      <p className="mb-2 text-sm leading-relaxed text-neutral-300">{shortText}</p>
       {text.length > 220 ? (
         <button
           type="button"
-          className="mb-4 text-xs font-semibold text-slate-600 underline"
+          className="mb-4 text-xs font-semibold text-accent-light underline"
           onClick={() => setExpanded((v) => !v)}
         >
           {expanded ? "Show less" : "Show more"}
@@ -59,14 +59,14 @@ function ResultCard({ item }) {
       ) : null}
 
       <div className="grid gap-3 md:grid-cols-2">
-        <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-emerald-900">Decision</h3>
-          <pre className="overflow-x-auto text-xs text-emerald-900">{formatJson(item.codified_data)}</pre>
+        <section className="rounded-xl border border-orange-900/30 bg-orange-950/20 p-3">
+          <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-accent-light">Decision</h3>
+          <pre className="overflow-x-auto text-xs text-neutral-300">{formatJson(item.codified_data)}</pre>
         </section>
 
-        <section className="rounded-xl border border-amber-200 bg-amber-50 p-3">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-amber-900">Context (Query History)</h3>
-          <pre className="overflow-x-auto text-xs text-amber-900">{formatJson(item.query_history)}</pre>
+        <section className="rounded-xl border border-neutral-700/40 bg-surface-light p-3">
+          <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-subtle">Context (Query History)</h3>
+          <pre className="overflow-x-auto text-xs text-neutral-400">{formatJson(item.query_history)}</pre>
         </section>
       </div>
     </article>
@@ -77,14 +77,14 @@ function ChatPanel({ answer, citations, evidenceFound }) {
   if (!answer && citations.length === 0) return null;
 
   return (
-    <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
-      <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-slate-700">Streaming Answer</h2>
-      <p className="mb-3 whitespace-pre-wrap text-sm leading-relaxed text-slate-800">{answer || "..."}</p>
+    <section className="mb-6 rounded-2xl border border-neutral-700/50 bg-panel p-4 shadow-card">
+      <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-accent-light">Streaming Answer</h2>
+      <p className="mb-3 whitespace-pre-wrap text-sm leading-relaxed text-neutral-300">{answer || "..."}</p>
 
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <span
           className={`rounded px-2 py-1 font-semibold ${
-            evidenceFound ? "bg-emerald-100 text-emerald-900" : "bg-amber-100 text-amber-900"
+            evidenceFound ? "bg-accent-dim/40 text-accent-light" : "bg-neutral-800 text-neutral-400"
           }`}
         >
           {evidenceFound ? "Evidence Found" : "Insufficient Evidence"}
@@ -94,7 +94,7 @@ function ChatPanel({ answer, citations, evidenceFound }) {
           <a
             key={clusterId}
             href={`#cluster-${clusterId}`}
-            className="rounded bg-slate-100 px-2 py-1 font-semibold text-slate-700 hover:bg-slate-200"
+            className="rounded bg-neutral-800 px-2 py-1 font-semibold text-accent-light hover:bg-neutral-700"
           >
             [{idx + 1}] {clusterId.slice(0, 8)}
           </a>
@@ -249,39 +249,39 @@ export default function App() {
     <div className="mx-auto min-h-screen max-w-6xl px-4 py-8 md:px-8">
       <div className="mb-8 flex items-center justify-between gap-4">
         <h1 className="text-xl font-semibold tracking-tight text-ink md:text-2xl">Contract Precedent Search</h1>
-        <span className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
+        <span className="rounded-lg border border-neutral-700 bg-panel px-3 py-2 text-sm font-semibold text-accent-light">
           Scope: All Bank Streams
         </span>
       </div>
 
-      <form onSubmit={runSearch} className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
+      <form onSubmit={runSearch} className="mb-6 rounded-2xl border border-neutral-700/50 bg-panel p-4 shadow-card">
         <div className="mb-3 grid gap-3 md:grid-cols-3">
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">Term</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-accent-light">Term</label>
             <input
               type="text"
               placeholder="e.g. Governing Law"
-              className="h-12 w-full rounded-xl border border-slate-300 px-4 text-sm outline-none ring-slate-200 focus:ring"
+              className="h-12 w-full rounded-xl border border-neutral-600 bg-surface-light px-4 text-sm text-neutral-200 placeholder-neutral-500 outline-none ring-accent/30 focus:border-accent focus:ring"
               value={term}
               onChange={(e) => setTerm(e.target.value)}
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">Attribute</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-accent-light">Attribute</label>
             <input
               type="text"
               placeholder="e.g. Jurisdiction"
-              className="h-12 w-full rounded-xl border border-slate-300 px-4 text-sm outline-none ring-slate-200 focus:ring"
+              className="h-12 w-full rounded-xl border border-neutral-600 bg-surface-light px-4 text-sm text-neutral-200 placeholder-neutral-500 outline-none ring-accent/30 focus:border-accent focus:ring"
               value={attribute}
               onChange={(e) => setAttribute(e.target.value)}
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">Language</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-accent-light">Language</label>
             <input
               type="text"
               placeholder="e.g. governed by laws of England"
-              className="h-12 w-full rounded-xl border border-slate-300 px-4 text-sm outline-none ring-slate-200 focus:ring"
+              className="h-12 w-full rounded-xl border border-neutral-600 bg-surface-light px-4 text-sm text-neutral-200 placeholder-neutral-500 outline-none ring-accent/30 focus:border-accent focus:ring"
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
             />
@@ -290,7 +290,7 @@ export default function App() {
         <div className="flex gap-3">
           <button
             type="submit"
-            className="h-12 rounded-xl bg-slate-900 px-5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:opacity-60"
+            className="h-12 rounded-xl bg-neutral-700 px-5 text-sm font-semibold text-neutral-200 transition hover:bg-neutral-600 disabled:opacity-40"
             disabled={loading || chatStreaming || !hasInput}
           >
             {loading && !chatStreaming ? "Searching..." : "Search"}
@@ -298,7 +298,7 @@ export default function App() {
           <button
             type="button"
             onClick={runAskStream}
-            className="h-12 rounded-xl bg-teal-700 px-5 text-sm font-semibold text-white transition hover:bg-teal-600 disabled:opacity-60"
+            className="h-12 rounded-xl bg-accent px-5 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:opacity-40"
             disabled={loading || chatStreaming || !hasInput}
           >
             {chatStreaming ? "Streaming..." : "Ask AI (Stream)"}
@@ -306,8 +306,8 @@ export default function App() {
         </div>
       </form>
 
-      {note ? <p className="mb-4 text-sm text-slate-700">{note}</p> : null}
-      {error ? <p className="mb-4 rounded-lg bg-red-100 px-3 py-2 text-sm text-red-700">{error}</p> : null}
+      {note ? <p className="mb-4 text-sm text-subtle">{note}</p> : null}
+      {error ? <p className="mb-4 rounded-lg bg-red-950/50 border border-red-800/50 px-3 py-2 text-sm text-red-400">{error}</p> : null}
 
       <ChatPanel answer={chatAnswer} citations={chatCitations} evidenceFound={chatEvidenceFound} />
 
@@ -316,7 +316,7 @@ export default function App() {
           <ResultCard key={item.id} item={item} />
         ))}
         {!loading && !error && results.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-400 bg-white/60 p-8 text-center text-sm text-slate-600">
+          <div className="rounded-2xl border border-dashed border-neutral-700 bg-panel/60 p-8 text-center text-sm text-neutral-500">
             No precedents displayed yet. Run a search.
           </div>
         ) : null}
