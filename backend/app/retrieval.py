@@ -69,16 +69,25 @@ def search_clusters_structured(
     params: dict = {"client_id": client_id, "top_k": top_k}
 
     if term and attribute:
-        conditions.append("jsonb_exists(codified_data, %(term)s)")
-        conditions.append("jsonb_exists(codified_data->%(term)s, %(attribute)s)")
+        conditions.append(
+            "EXISTS (SELECT 1 FROM jsonb_object_keys(codified_data) AS k WHERE lower(k) = lower(%(term)s))"
+        )
+        conditions.append(
+            "EXISTS (SELECT 1 FROM jsonb_each(codified_data) AS kv"
+            " WHERE lower(kv.key) = lower(%(term)s)"
+            " AND EXISTS (SELECT 1 FROM jsonb_object_keys(kv.value) AS k2 WHERE lower(k2) = lower(%(attribute)s)))"
+        )
         params["term"] = term
         params["attribute"] = attribute
     elif term:
-        conditions.append("jsonb_exists(codified_data, %(term)s)")
+        conditions.append(
+            "EXISTS (SELECT 1 FROM jsonb_object_keys(codified_data) AS k WHERE lower(k) = lower(%(term)s))"
+        )
         params["term"] = term
     elif attribute:
         conditions.append(
-            "EXISTS (SELECT 1 FROM jsonb_each(codified_data) AS kv WHERE jsonb_exists(kv.value, %(attribute)s))"
+            "EXISTS (SELECT 1 FROM jsonb_each(codified_data) AS kv"
+            " WHERE EXISTS (SELECT 1 FROM jsonb_object_keys(kv.value) AS k2 WHERE lower(k2) = lower(%(attribute)s)))"
         )
         params["attribute"] = attribute
 
